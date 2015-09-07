@@ -22,3 +22,13 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+# Binary
+/chatwork-agent
+
+# TOML
+chatwork.toml
+
+# gom
+_vendor
+
