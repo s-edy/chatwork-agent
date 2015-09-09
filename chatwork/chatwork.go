@@ -6,15 +6,6 @@ import (
 	"strconv"
 )
 
-type Message struct {
-	RoomId  uint   `json:"rid"`
-	To      []uint `json:"to,omitempty"`
-	Re      []uint `json:"re,omitempty"`
-	Message string `json:"message,omitempty"`
-	Info    string `json:"info,omitempty"`
-	Title   string `json:"title,omitempty"`
-}
-
 type Chatwork struct {
 	request *Request
 	client  *Client
@@ -27,11 +18,16 @@ func NewChatwork(request *Request, client *Client) *Chatwork {
 	}
 }
 
-func (this *Chatwork) SendMessage(data *Message) ([]byte, error) {
-	path := fmt.Sprintf("/rooms/%s/messages", strconv.FormatUint(uint64(data.RoomId), 10))
+func (this *Chatwork) SendMessage(message *Message) ([]byte, error) {
+	path := fmt.Sprintf("/rooms/%s/messages", strconv.FormatUint(uint64(message.RoomId), 10))
 
 	values := url.Values{}
-	values.Set("body", data.Message)
+
+	body, err := message.Build()
+	if err != nil {
+		return nil, err
+	}
+	values.Set("body", body)
 
 	request, err := this.request.Create("POST", path, values)
 	if err != nil {
